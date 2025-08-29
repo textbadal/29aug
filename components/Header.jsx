@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Menu, X, Phone } from "lucide-react";
 
 export default function Header() {
@@ -17,10 +18,15 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 bg-white/80 backdrop-blur shadow-sm">
       <nav className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-        {/* Logo / Brand */}
-        <Link href="/" className="font-bold text-2xl text-gray-900">
-          Dream <span className="text-blue-600">Homes</span> Bihar
-        </Link>
+      <Link href="/">
+  <Image
+    src="/fevicon.png"   // Make sure favicon.png is in the /public folder
+    alt="Dream Homes Bihar Logo"
+    width={50}           // adjust width as needed
+    height={50}          // adjust height as needed
+    className="object-contain"
+  />
+</Link>
 
         {/* Desktop Links */}
         <ul className="hidden md:flex gap-8 text-sm font-medium text-gray-700">
