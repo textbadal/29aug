@@ -1,10 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
-import { FaDownload, FaShoppingCart } from "react-icons/fa";
+import { FaDownload, FaStar, FaFire, FaRocket, FaCheckCircle } from "react-icons/fa";
 import Script from "next/script";
-import { toast } from "react-hot-toast"; // Optional: for notifications
+import { useState, useEffect } from "react";
 
 interface Product {
   id: number;
@@ -13,118 +12,75 @@ interface Product {
   description: string;
   image: string;
   downloadLink: string;
-  badge?: string;
+  badge?: "Best Seller" | "Popular" | "New";
 }
 
 const products: Product[] = [
   {
     id: 1,
     title: "10,000+ House Floor Plans Pack",
-    price: "₹999",
-    description: "Get access to a huge library of house plans in CAD & PDF format.",
+    price: "₹199",
+    description: "Get instant access to a huge library of house plans in CAD & PDF format.",
     image: "/images/product1.jpg",
-    downloadLink: "#",
+    downloadLink: "https://forms.gle/9DerZQwDMW9H8u2T8",
     badge: "Best Seller",
   },
   {
     id: 2,
     title: "Vastu Shastra Guide (E-book)",
-    price: "₹299",
+    price: "₹49",
     description: "A complete guide to designing vastu-compliant homes.",
     image: "/images/product2.jpg",
-    downloadLink: "#",
-    badge: "Popular",
-  },
-  {
-    id: 3,
-    title: "3D Front Elevation Designs",
-    price: "₹499",
-    description: "High-quality 3D elevation samples for modern homes.",
-    image: "/images/product3.jpg",
-    downloadLink: "#",
-    badge: "New",
-  },
-  {
-    id: 4,
-    title: "Interior Design Inspirations Pack",
-    price: "₹799",
-    description: "Pre-designed interior layouts and mood boards for every room.",
-    image: "/images/product4.jpg",
-    downloadLink: "#",
-    badge: "Trending",
-  },
-  {
-    id: 5,
-    title: "Modern Kitchen & Bathroom Plans",
-    price: "₹599",
-    description: "Ready-to-use kitchen and bathroom layouts for modern homes.",
-    image: "/images/product5.jpg",
-    downloadLink: "#",
-    badge: "Popular",
-  },
-  {
-    id: 6,
-    title: "Landscape & Garden Design Guide",
-    price: "₹399",
-    description: "Step-by-step guide to designing beautiful outdoor spaces.",
-    image: "/images/product6.jpg",
-    downloadLink: "#",
-    badge: "New",
-  },
-  {
-    id: 7,
-    title: "Complete Home Renovation Guide",
-    price: "₹499",
-    description: "All-in-one guide for renovating old homes efficiently.",
-    image: "/images/product7.jpg",
-    downloadLink: "#",
-    badge: "Recommended",
-  },
-  {
-    id: 8,
-    title: "3D Rendering Tools & Templates",
-    price: "₹899",
-    description: "Editable 3D templates and tools for architects and designers.",
-    image: "/images/product8.jpg",
-    downloadLink: "#",
-    badge: "Best Seller",
-  },
-  {
-    id: 9,
-    title: "Small Apartment Design Pack",
-    price: "₹349",
-    description: "Optimized floor plans for small and compact living spaces.",
-    image: "/images/product9.jpg",
-    downloadLink: "#",
+    downloadLink: "https://forms.gle/YourGoogleFormLinkHere",
     badge: "Popular",
   },
   {
     id: 10,
     title: "Eco-Friendly Home Guide",
-    price: "₹299",
+    price: "₹29",
     description: "Tips and plans to design energy-efficient, sustainable homes.",
     image: "/images/product10.jpg",
-    downloadLink: "#",
+    downloadLink: "https://forms.gle/YourGoogleFormLinkHere",
     badge: "New",
   },
 ];
 
 export default function ProductsPage() {
-  const [cart, setCart] = useState<number[]>([]);
+  const [isVisible, setIsVisible] = useState(false);
+  
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
 
-  const toggleCart = (product: Product) => {
-    if (cart.includes(product.id)) {
-      setCart((prev) => prev.filter((id) => id !== product.id));
-      toast.success(`You removed "${product.title}" from cart`);
-    } else {
-      setCart((prev) => [...prev, product.id]);
-      toast.success(`Added "${product.title}" to cart`);
+  const getBadgeGradient = (badge?: Product["badge"]) => {
+    switch (badge) {
+      case "Best Seller":
+        return "bg-gradient-to-r from-yellow-400 to-yellow-600 text-black";
+      case "Popular":
+        return "bg-gradient-to-r from-pink-500 to-pink-700 text-white";
+      case "New":
+        return "bg-gradient-to-r from-green-500 to-green-700 text-white";
+      default:
+        return "";
+    }
+  };
+
+  const getBadgeIcon = (badge?: Product["badge"]) => {
+    switch (badge) {
+      case "Best Seller":
+        return <FaStar className="inline mr-1" size={12} />;
+      case "Popular":
+        return <FaFire className="inline mr-1" size={12} />;
+      case "New":
+        return <FaRocket className="inline mr-1" size={12} />;
+      default:
+        return null;
     }
   };
 
   return (
     <>
-      {/* ✅ Structured Data for SEO */}
+      {/* Structured Data */}
       <Script
         id="products-schema"
         type="application/ld+json"
@@ -141,7 +97,7 @@ export default function ProductsPage() {
               brand: { "@type": "Brand", name: "Dream Homes Bihar" },
               offers: {
                 "@type": "Offer",
-                url: `https://dreamhomesbihar.online/products#${product.id}`,
+                url: product.downloadLink,
                 priceCurrency: "INR",
                 price: product.price.replace("₹", ""),
                 availability: "https://schema.org/InStock",
@@ -151,76 +107,127 @@ export default function ProductsPage() {
         }}
       />
 
-      {/* Products Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-6">
-          {/* Page Header */}
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-gray-900">
-              Digital Products
+      {/* Hero Section */}
+      <section className="relative bg-gradient-to-br from-yellow-50 via-white to-yellow-100 py-16 md:py-24 overflow-hidden">
+        {/* Decorative elements */}
+        <div className="absolute top-0 left-0 w-72 h-72 bg-yellow-200 rounded-full -translate-x-1/2 -translate-y-1/2 opacity-50"></div>
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-yellow-300 rounded-full translate-x-1/3 translate-y-1/3 opacity-30"></div>
+        
+        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center gap-10 relative z-10">
+          {/* Text */}
+          <div className="md:w-1/2 text-center md:text-left">
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight">
+              Instant Access to Premium <span className="text-yellow-600">House Plans</span> & Guides
             </h1>
-            <p className="mt-3 text-lg text-gray-600">
-              Instantly download our premium plans, designs, and guides.
+            <p className="text-gray-700 text-lg md:text-xl mb-8">
+              Download Vastu-compliant floor plans, eco-friendly home guides, and more — instantly!
             </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4 items-center justify-center md:justify-start">
+              <a
+                href="https://forms.gle/9DerZQwDMW9H8u2T8"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white font-bold rounded-xl text-lg shadow-lg transition-all transform hover:scale-105 hover:shadow-xl"
+              >
+                <FaDownload /> Get Your Pack Now
+              </a>
+              
+              <div className="flex items-center mt-4 sm:mt-0">
+                <div className="flex -space-x-3 mr-3">
+                  {[1, 2, 3].map((item) => (
+                    <div key={item} className="w-10 h-10 rounded-full bg-yellow-500 border-2 border-white"></div>
+                  ))}
+                </div>
+                <p className="text-sm text-gray-600">Trusted by <span className="font-bold">1000+</span> users</p>
+              </div>
+            </div>
+            
+            <div className="mt-8 grid grid-cols-3 gap-4 max-w-md mx-auto md:mx-0">
+              {["Instant download", "No registration", "Premium quality"].map((feature, index) => (
+                <div key={index} className="flex items-center text-sm text-gray-600">
+                  <FaCheckCircle className="text-yellow-500 mr-1" />
+                  <span>{feature}</span>
+                </div>
+              ))}
+            </div>
           </div>
 
-          {/* Product Grid */}
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {products.map((product) => (
+          {/* Hero Image */}
+          <div className="md:w-1/2 relative w-full h-64 md:h-96">
+            <div className="absolute -inset-4 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-3xl rotate-3 opacity-20"></div>
+            <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-2xl">
+              <Image
+                src="/images/product1.jpg"
+                alt="Digital Products Hero"
+                fill
+                className="object-cover"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Products Section */}
+      <section className="py-16 bg-gradient-to-b from-white to-gray-50">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Our Premium <span className="text-yellow-600">Digital Products</span>
+            </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Carefully curated resources to help you design and build your dream home
+            </p>
+          </div>
+          
+          <div className="grid gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+            {products.map((product, index) => (
               <div
                 key={product.id}
-                className="bg-white rounded-2xl shadow hover:shadow-lg transition overflow-hidden relative flex flex-col"
+                className={`bg-white rounded-2xl shadow-xl hover:shadow-2xl transform transition-all duration-500 hover:-translate-y-2 overflow-hidden relative flex flex-col ${
+                  isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+                }`}
+                style={{ transitionDelay: `${index * 100}ms` }}
               >
-                {/* Badge */}
                 {product.badge && (
-                  <span className="absolute top-3 left-3 bg-yellow-500 text-black text-xs font-bold px-3 py-1 rounded-full shadow z-10">
+                  <span
+                    className={`absolute top-4 left-4 px-3 py-1 rounded-full font-bold text-xs shadow-lg z-10 flex items-center ${getBadgeGradient(
+                      product.badge
+                    )}`}
+                  >
+                    {getBadgeIcon(product.badge)}
                     {product.badge}
                   </span>
                 )}
 
-                {/* Product Image */}
-                <div className="relative w-full h-56">
+                <div className="relative w-full h-60 overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent z-10"></div>
                   <Image
                     src={product.image}
                     alt={product.title}
                     fill
-                    className="object-cover transition-transform hover:scale-105"
+                    className="object-cover transition-transform duration-700 hover:scale-110"
                   />
                 </div>
 
-                {/* Product Details */}
                 <div className="p-6 flex flex-col flex-1">
-                  <h3 className="text-lg font-semibold text-gray-900">
-                    {product.title}
-                  </h3>
-                  <p className="text-gray-500 text-sm mt-2 flex-1">
-                    {product.description}
-                  </p>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">{product.title}</h3>
+                  <p className="text-gray-600 mb-4 flex-1">{product.description}</p>
 
-                  <div className="flex justify-between items-center mt-4">
-                    <span className="text-xl font-bold text-yellow-600">
-                      {product.price}
-                    </span>
+                  <div className="flex justify-between items-center mt-4 pt-4 border-t border-gray-100">
+                    <div className="flex flex-col">
+                      <span className="text-xs text-gray-500">Only</span>
+                      <span className="text-2xl font-extrabold text-yellow-600">{product.price}</span>
+                    </div>
 
-                    {/* Add to Cart / Download */}
-                    <button
-                      onClick={() => toggleCart(product)}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition ${
-                        cart.includes(product.id)
-                          ? "bg-green-600 text-white hover:bg-green-700"
-                          : "bg-yellow-500 hover:bg-yellow-400 text-black"
-                      }`}
+                    <a
+                      href={product.downloadLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold transition-all bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white shadow-md hover:shadow-lg hover:gap-3"
                     >
-                      {cart.includes(product.id) ? (
-                        <>
-                          <FaDownload /> Download
-                        </>
-                      ) : (
-                        <>
-                          <FaShoppingCart /> Buy Now
-                        </>
-                      )}
-                    </button>
+                      <FaDownload /> Instant Download
+                    </a>
                   </div>
                 </div>
               </div>
@@ -228,6 +235,33 @@ export default function ProductsPage() {
           </div>
         </div>
       </section>
+      
+      {/* Testimonial Section */}
+      <section className="py-16 bg-gray-900 text-white">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <h2 className="text-3xl font-bold mb-12">What Our <span className="text-yellow-400">Customers Say</span></h2>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              { name: "Rajesh K.", comment: "The floor plans pack saved me thousands in architect fees!" },
+              { name: "Priya S.", comment: "The Vastu guide helped me design a home that feels so peaceful." },
+              { name: "Amit P.", comment: "Instant delivery and excellent quality. Will buy again!" }
+            ].map((testimonial, index) => (
+              <div key={index} className="bg-gray-800 p-6 rounded-2xl">
+                <div className="flex justify-center mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <FaStar key={i} className="text-yellow-400 mx-1" />
+                  ))}
+                </div>
+                <p className="italic mb-4">"{testimonial.comment}"</p>
+                <p className="font-semibold text-yellow-400">{testimonial.name}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+      
+    
     </>
   );
 }

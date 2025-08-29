@@ -12,21 +12,21 @@ export default function TestimonialsPage() {
       role: "Patna, Bihar",
       feedback:
         "Dream Homes Bihar designed my house perfectly as per Vastu. The team is very professional and cooperative!",
-      image: "/images/client1.jpg",
+      image: "/images/user1.jpg",
     },
     {
       name: "Anjali Singh",
       role: "Gaya, Bihar",
       feedback:
         "They provided me with an amazing 3D front elevation. My family loved the design!",
-      image: "/images/client2.jpg",
+      image: "/images/user2.jpg",
     },
     {
       name: "Amit Sharma",
       role: "Muzaffarpur, Bihar",
       feedback:
         "Affordable pricing and top-class service. Highly recommended for house planning!",
-      image: "/images/client3.jpg",
+      image: "/images/user3.jpg",
     },
   ];
 
